@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.commentMapper">
+	<select id="getList" resultType="org.zerock.domain.commentVO">
+		select /*+ index_desc(comment_table) */ * from comment_table
+		where b_no = #{b_no}
+	</select>
+	
+	
+	
+	<insert id="insert">
+		insert into group_table(g_no, g_title, g_intro, g_content, g_loc, g_user_id)
+		values(seq_group.nextval, #{g_title}, #{g_intro}, #{g_content}, #{g_loc}, 'user00')
+	</insert>
+	
+	
+	<insert id="insertSelectKey2">
+		<selectKey keyProperty="c_no" order="BEFORE" resultType="long">
+			select seq_comment.nextval from dual
+		</selectKey>
+		insert into comment_table(c_no, c_content, c_user_id, b_no)
+		values(#{c_no}, #{c_content}, #{c_user_id}, #{b_no})
+		
+	</insert>
+	
+	
+	
+	<select id="read" resultType="org.zerock.domain.commentVO">
+		select * from comment_table where b_no = #{b_no}
+	</select>
+	
+	
+	<delete id="delete">
+		delete from group_table where g_no = #{g_no}
+	</delete>
+	<update id="update">
+		update group_table
+		set g_title = #{g_title}, g_intro = #{g_intro}, g_loc = #{g_loc}
+		where g_no = #{g_no}
+	</update>
+
+	<update id="update2">
+		update group_table 
+		set g_member_id = g_member_id || ',' || #{g_user_id},
+		    g_member_cnt = g_member_cnt + 1
+		where g_no = #{g_no}
+	</update>
+
+
+
+
+</mapper>

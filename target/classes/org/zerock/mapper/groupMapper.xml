@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.mapper.groupMapper">
+	<select id="getList" resultType="org.zerock.domain.groupVO">
+		select /*+ index_desc(group_table) */ * from group_table
+	</select>
+	<insert id="insert">
+		insert into group_table(g_no, g_title, g_intro, g_content, g_loc, g_user_id)
+		values(seq_group.nextval, #{g_title}, #{g_intro}, #{g_content}, #{g_loc}, 'user00')
+	</insert>
+	
+	
+	<insert id="insertSelectKey">
+		<selectKey keyProperty="g_no" order="BEFORE" resultType="long">
+			select seq_group.nextval from dual
+		</selectKey>
+		insert into group_table(g_no, g_title, g_intro, g_content, g_loc, g_user_id, g_img_src, g_thumb_src)
+		values(#{g_no}, #{g_title}, #{g_intro}, #{g_content}, #{g_loc}, #{g_user_id}, #{g_img_src}, #{g_thumb_src})
+	</insert>
+	
+	
+	
+	<select id="read" resultType="org.zerock.domain.groupVO">
+		select * from group_table where g_no = #{g_no}
+	</select>
+	<delete id="delete">
+		delete from group_table where g_no = #{g_no}
+	</delete>
+	<update id="update">
+		update group_table
+		set g_title = #{g_title}, g_intro = #{g_intro}, g_loc = #{g_loc}
+		where g_no = #{g_no}
+	</update>
+
+	<update id="update2">
+		update group_table 
+		set g_member_id = g_member_id || ',' || #{g_user_id},
+		    g_member_cnt = g_member_cnt + 1
+		where g_no = #{g_no}
+	</update>
+
+
+
+
+</mapper>
